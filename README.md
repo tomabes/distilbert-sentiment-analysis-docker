@@ -1,4 +1,4 @@
-# Docker Deep Learning Assignment
+# Docker Deep Learning Project
 
 This project runs sentiment analysis with a pretrained DistilBERT model.
 
@@ -55,7 +55,10 @@ The Dockerfiles are organized to make good use of Docker cache layers:
 
 The Compose file also includes memory limits, shared memory configuration, service dependency, and an API health check.
 
-## Hugging Face Spaces bonus
+## Hugging Face Spaces Part
 
-The `hf_space/` directory contains a standalone Gradio version for Hugging Face Spaces.
+The `hf_space/` directory [Yabusiki/distilbert-sentiment-analysis](https://huggingface.co/spaces/Yabusiki/distilbert-sentiment-analysis) contains a standalone Gradio version for Hugging Face Spaces.
+
 After uploading it to a Space, the online app can also be called through the Gradio API.
+
+The deployed application is publicly available in Hugging Face Spaces: https://yabusiki-distilbert-sentiment-analysis.hf.space/
