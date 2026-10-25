@@ -1,4 +1,4 @@
-# Docker Deep Learning Project
+# Docker NLP Project
 
 This project runs sentiment analysis with a pretrained DistilBERT model.
 
