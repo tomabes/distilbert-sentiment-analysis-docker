@@ -1,0 +1,25 @@
+services:
+  api:
+    build:
+      context: ./api
+    image: distilbert-api:latest
+    container_name: distilbert_api
+    ports:
+      - "8000:8000"
+    shm_size: "1gb"
+    mem_limit: "4g"
+
+  ui:
+    build:
+      context: ./ui
+    image: distilbert-ui:latest
+    container_name: distilbert_ui
+    ports:
+      - "7860:7860"
+    environment:
+      - API_URL=http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    shm_size: "512mb"
+    mem_limit: "1g"
