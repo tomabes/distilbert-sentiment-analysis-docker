@@ -1,13 +1,23 @@
-# Docker NLP Project
+# DistilBERT Sentiment Analysis with Docker
 
-This project runs sentiment analysis with a pretrained DistilBERT model.
+Containerized NLP application for classifying English review text as positive or negative. A FastAPI inference service and a Gradio user interface run as separate Docker services; a standalone version is deployed on Hugging Face Spaces.
 
-The architecture uses two Docker containers:
+[Try the live Hugging Face Space](https://yabusiki-distilbert-sentiment-analysis.hf.space/) · [View the Space repository](https://huggingface.co/spaces/Yabusiki/distilbert-sentiment-analysis)
 
-- `api`: FastAPI service that loads the model and performs inference.
-- `ui`: Gradio interface that sends HTTP requests to the API service.
+![DistilBERT sentiment-analysis interface on Hugging Face Spaces](report_assets/Screenshot%202026-10-25%20at%2011.02.21.png)
 
-The model receives English review text and returns a sentiment label plus a confidence score.
+## Architecture
+
+```text
+Browser -> Gradio UI container -> FastAPI container -> DistilBERT model
+```
+
+- `api`: loads the pretrained model and exposes `/predict` and `/health` endpoints;
+- `ui`: collects review text and sends HTTP requests to the API service;
+- Docker Compose configures service dependency, health checking, shared memory and resource limits;
+- `hf_space`: provides a standalone Gradio deployment for Hugging Face Spaces.
+
+The API returns a sentiment label and confidence score. The Dockerfiles separate dependency installation, model download and application code to improve build-cache reuse.
 
 ## Run with Docker Compose
 
@@ -16,13 +26,7 @@ docker compose build
 docker compose up
 ```
 
-Open the interface:
-
-```text
-http://localhost:7860
-```
-
-Test the API directly:
+Open `http://localhost:7860` for the interface. Test the API directly:
 
 ```bash
 curl -X POST http://localhost:8000/predict \
@@ -32,33 +36,24 @@ curl -X POST http://localhost:8000/predict \
 
 ## Run the API container manually
 
-First build the API image:
-
 ```bash
 docker build -t distilbert-api:latest ./api
-```
-
-Then run:
-
-```bash
 bash scripts/run_api_container.sh
 ```
 
-## Project improvements
+## Repository structure
 
-The Dockerfiles are organized to make good use of Docker cache layers:
+```text
+api/            # FastAPI application, model download and Dockerfile
+ui/             # Gradio client and Dockerfile
+hf_space/       # standalone Hugging Face Spaces application
+scripts/        # local API tests and container helpers
+report_en.pdf   # architecture, experiments and discussion
+docker-compose.yml
+```
 
-1. Copy dependency files.
-2. Install dependencies.
-3. Download the pretrained model.
-4. Copy application code.
+The complete implementation and resource experiments are documented in the [English project report](report_en.pdf).
 
-The Compose file also includes memory limits, shared memory configuration, service dependency, and an API health check.
+## Tools
 
-## Hugging Face Spaces Part
-
-The `hf_space/` directory [Yabusiki/distilbert-sentiment-analysis](https://huggingface.co/spaces/Yabusiki/distilbert-sentiment-analysis) contains a standalone Gradio version for Hugging Face Spaces.
-
-After uploading it to a Space, the online app can also be called through the Gradio API.
-
-The deployed application is publicly available in Hugging Face Spaces: https://yabusiki-distilbert-sentiment-analysis.hf.space/
+Python, DistilBERT, Transformers, PyTorch, FastAPI, Gradio, Docker, Docker Compose and Hugging Face Spaces.
